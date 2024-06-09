@@ -77,24 +77,28 @@ button:hover {
   padding: 2em;
 }
 
-@media(max-width:480px){
+@media(max-width:600px){
+  .App{ width: 70%;
+    margin-left: 17%;
+}
   .App-header{
     width: 22vw;
     font-size: 2.5vw;
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin: 7%;
+    margin-left: 3%;
   }
   .App-header h1{
     font-size: 2.8em;
-    margin: 15%;
+    margin-left:37vw;
     
   }
   .App-header input{
     width: 35vw;
     height: 1vh;
-    font-size: 1em;
+    font-size: 1.2em;
+    margin-left: 35vw;
    
   }
   .filters{
