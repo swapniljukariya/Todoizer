@@ -44,6 +44,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>todos</h1>
+        <h2>Your daily todo</h2>
         <form onSubmit={addTodo}>
           <input
             type="text"
