@@ -76,3 +76,119 @@ button:hover {
   justify-content: space-between;
   padding: 2em;
 }
+
+@media(max-width:480px){
+  .App-header{
+    width: 22vw;
+    font-size: 2.5vw;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 7%;
+  }
+  .App-header h1{
+    font-size: 2.8em;
+    margin: 15%;
+    
+  }
+  .App-header input{
+    width: 35vw;
+    height: 1vh;
+    font-size: 1em;
+   
+  }
+  .filters{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+}
+@media((min-width: 481px) and (max-width: 768px)){
+  .App{
+    height: 90Vh;
+    width: 80vw;
+    margin-left:10%;
+
+  }
+  .App-header{
+    width: 50vw;
+    font-size: 2.9vw;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  
+    margin-left: 3%;
+    margin-bottom: 1.3em;
+    
+    
+  
+  }
+  .App-header h1{
+    font-size: 3.8em;
+    margin-left: 50%
+    
+  }
+  .App-header input{
+    width: 50vw;
+    height: 5vh;
+    margin-left:25%;
+    font-size: 1.2em;
+    gap: 4em;}
+  .filters{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 3.5em;
+    font-size: 1em;
+  }
+  li{
+    font-size: 1.4em;
+  }
+}
+@media(min-width: 769px) and (max-width: 1024px){
+  .App{
+    height:100Vh;
+    width: 90vw;
+    margin-left:10%;
+
+  }
+  .App-header{
+    width: 70vw;
+    font-size: 2.9vw;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  
+    margin-left: 3%;
+    margin-bottom: 1.3em;
+    
+    
+  
+  }
+  .App-header h1{
+    font-size: 3.8em;
+    margin-left: 50%
+    
+  }
+  .App-header input{
+    width: 50vw;
+    height: 5vh;
+    margin-left:25%;
+    font-size: 1.2em;
+    gap: 4em;}
+  .filters{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4.5em;
+    font-size: 1em;
+  }
+  li{
+    font-size: 1.4em;
+  }
+
+
+}
