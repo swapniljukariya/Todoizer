@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  // Initialize todos from local storage or set to empty array if not found
+  const [todos, setTodos] = useState(() => {
+    const storedTodos = localStorage.getItem('todos');
+    return storedTodos ? JSON.parse(storedTodos) : [];
+  });
   const [newTodo, setNewTodo] = useState('');
   const [filter, setFilter] = useState('all');
+
+  // Save todos to local storage whenever they change
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
 
   const addTodo = (e) => {
     e.preventDefault();
     if (newTodo.trim()) {
-      setTodos([...todos, { text: newTodo, completed: false }]);
+      const updatedTodos = [...todos, { text: newTodo, completed: false }];
+      setTodos(updatedTodos);
       setNewTodo('');
     }
   };
@@ -44,7 +54,6 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>todos</h1>
-        <h2>Your daily todo</h2>
         <form onSubmit={addTodo}>
           <input
             type="text"
@@ -52,13 +61,14 @@ function App() {
             onChange={(e) => setNewTodo(e.target.value)}
             placeholder="What needs to be done?"
           />
+        
         </form>
       </header>
       <ul>
         {filteredTodos.map((todo, index) => (
           <li key={index} className={todo.completed ? 'completed' : ''}>
             <div onClick={() => toggleTodo(index)}>
-              <input type="checkbox" checked={todo.completed} readOnly />
+              <input type="checkbox" checked={todo.completed} onChange={() => {}} />
               <label>{todo.text}</label>
             </div>
             <button onClick={() => deleteTodo(index)}>Delete</button>
@@ -66,18 +76,16 @@ function App() {
         ))}
       </ul>
       <footer className="App-footer">
-      <div className="filters">
-        <h4>{itemsLeft} item{itemsLeft !== 1 ? 's' : ''} left</h4>
-       
-          <h4 onClick={() => setFilter('all')} className={filter === 'all' ? 'selected' : ''}>All</h4>
-          <h4 onClick={() => setFilter('active')} className={filter === 'active' ? 'selected' : ''}>Active</h4>
-          <h4 onClick={() => setFilter('completed')} className={filter === 'completed' ? 'selected' : ''}>Completed</h4>
-        
-        <h4 onClick={clearCompleted}>Clear completed</h4>
+        <div className="filters">
+          <span>{itemsLeft} item{itemsLeft !== 1 ? 's' : ''} left</span>
+          <button onClick={() => setFilter('all')} className="selected">All</button>
+          <button onClick={() => setFilter('active')} className="selected">Active</button>
+          <button onClick={() => setFilter('completed')} className="selected">Completed</button>
+          <button onClick={clearCompleted} className='selected'>Clear completed</button>
         </div>
       </footer>
     </div>
   );
 }
+
 export default App;
- 

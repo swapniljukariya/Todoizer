@@ -35,6 +35,9 @@ body {
   box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
   margin-left: 22%;
   border: 1px solid brown;
+  font-weight: bold ;
+  font-style: italic;
+  font-size: 1.1em;
 }
 
 ul {
@@ -63,8 +66,10 @@ button {
   margin-left: auto;
   background: none;
   border: none;
-  color: #cc9a9a;
+  color: brown;
   cursor: pointer;
+  font-weight: bold;
+  font-size: 1em;
 }
 
 button:hover {
@@ -88,6 +93,7 @@ button:hover {
     align-items: center;
     flex-direction: column;
     margin-left: 3%;
+    font-size: 0.8em;
   }
   .App-header h1{
     font-size: 2.8em;
@@ -99,12 +105,25 @@ button:hover {
     height: 1vh;
     font-size: 1.2em;
     margin-left: 35vw;
+    font-size: 0.7em;
    
+  }
+  button{
+    font-size: 0.8em;
   }
   .filters{
     display: flex;
     flex-direction: column;
-    align-items: center;
+   align-items: center;
+   font-size: 0.9em;
+    gap: 1em;
+  
+   
+  }
+  .selected{
+    margin-right: 6em;
+
+    padding: 1.2em;
   }
 
 }
@@ -150,6 +169,8 @@ button:hover {
   li{
     font-size: 1.4em;
   }
+
+ 
 }
 @media(min-width: 769px) and (max-width: 1024px){
   .App{
@@ -185,7 +206,7 @@ button:hover {
     gap: 4em;}
   .filters{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     gap: 4.5em;
     font-size: 1em;
