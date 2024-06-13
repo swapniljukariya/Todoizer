@@ -9,6 +9,7 @@ function App() {
   });
   const [newTodo, setNewTodo] = useState('');
   const [filter, setFilter] = useState('all');
+  const [activeTodoIndex, setActiveTodoIndex] = useState(null);
 
   // Save todos to local storage whenever they change
   useEffect(() => {
@@ -18,7 +19,7 @@ function App() {
   const addTodo = (e) => {
     e.preventDefault();
     if (newTodo.trim()) {
-      const updatedTodos = [...todos, { text: newTodo, completed: false }];
+      const updatedTodos = [...todos, { text: newTodo, description: '', completed: false }];
       setTodos(updatedTodos);
       setNewTodo('');
     }
@@ -38,6 +39,13 @@ function App() {
 
   const clearCompleted = () => {
     const newTodos = todos.filter(todo => !todo.completed);
+    setTodos(newTodos);
+  };
+
+  const updateDescription = (index, newDescription) => {
+    const newTodos = todos.map((todo, i) =>
+      i === index ? { ...todo, description: newDescription } : todo
+    );
     setTodos(newTodos);
   };
 
@@ -61,16 +69,26 @@ function App() {
             onChange={(e) => setNewTodo(e.target.value)}
             placeholder="What needs to be done?"
           />
-        
         </form>
       </header>
       <ul>
         {filteredTodos.map((todo, index) => (
           <li key={index} className={todo.completed ? 'completed' : ''}>
-            <div onClick={() => toggleTodo(index)}>
-              <input type="checkbox" checked={todo.completed} onChange={() => {}} />
+            <div onClick={() => setActiveTodoIndex(index === activeTodoIndex ? null : index)}>
+              <input type="checkbox" checked={todo.completed} onChange={() => toggleTodo(index)} />
               <label>{todo.text}</label>
             </div>
+            {activeTodoIndex === index && (
+              <div>
+                <input
+                  type="text"
+                  value={todo.description}
+                  onChange={(e) => updateDescription(index, e.target.value)}
+                  placeholder="Add description"
+                  className='description'
+                />
+              </div>
+            )}
             <button onClick={() => deleteTodo(index)}>Delete</button>
           </li>
         ))}

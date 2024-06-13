@@ -81,6 +81,16 @@ button:hover {
   justify-content: space-between;
   padding: 2em;
 }
+.description{
+border: 2px solid brown;
+ height: 30vh;
+ width: 45vw;
+ margin-left: 0.4em;
+ font-family: Verdana, Geneva, Tahoma, sans-serif;
+ font-size: 1em;
+ font-style: italic;
+ overflow: auto;
+}
 
 @media(max-width:600px){
   .App{ width: 70%;
