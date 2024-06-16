@@ -3,17 +3,17 @@ body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   line-height: 1.4em;
   margin: 0;
-  padding: 0;color: brown;
+  padding: 0;
+  color: brown;
   font-style: italic;
 }
 
 .App {
   background: #fff;
-  margin: 130px 0 40px 0;
+  margin: 130px auto 40px;
   position: relative;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
   width: 56vw;
-  margin-left:23%;
 }
 
 .App-header {
@@ -33,9 +33,9 @@ body {
   border: none;
   font-size: 24px;
   box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
-  margin-left: 22%;
+  margin-left: 20%;
   border: 1px solid brown;
-  font-weight: bold ;
+  font-weight: bold;
   font-style: italic;
   font-size: 1.1em;
 }
@@ -65,32 +65,54 @@ input[type="checkbox"] {
 button {
   margin-left: auto;
   background: none;
-  border: none;
+  border: 1px solid brown;
   color: brown;
   cursor: pointer;
   font-weight: bold;
   font-size: 1em;
+  padding: 5px 10px;
+  margin-left: 10px;
 }
 
 button:hover {
   color: #af5b5e;
+  border-color: #af5b5e;
 }
-.filters{
-  display :flex;
+
+.filters {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 2em;
 }
-.description{
-border: 2px solid brown;
- height: 30vh;
- width: 45vw;
- margin-left: 0.4em;
- font-family: Verdana, Geneva, Tahoma, sans-serif;
- font-size: 1em;
- font-style: italic;
- overflow: auto;
+
+.description,
+.picture,
+.sub-todo-input {
+  display: block;
+  width: 80%;
+  margin: 10px auto;
+  padding: 10px;
+  border: 1px solid brown;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 1em;
+  font-style: italic;
 }
+
+.sub-todos {
+  border-top: 1px solid red;
+  margin-top: 10px;
+}
+
+.todo-picture {
+  margin-top: 10px;
+  max-height: 200px;
+  max-width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 
 @media(max-width:600px){
   .App{ width: 70%;
