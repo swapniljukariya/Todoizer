@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import Modal from './Modal';
 
 function App() {
   const [todos, setTodos] = useState(() => {
@@ -9,10 +10,8 @@ function App() {
 
   const [newTodo, setNewTodo] = useState('');
   const [filter, setFilter] = useState('all');
-  const [activeTodoIndex, setActiveTodoIndex] = useState(null);
-  const [showSubTodoInput, setShowSubTodoInput] = useState(false);
-  const [showDescriptionInput, setShowDescriptionInput] = useState(false);
-  const [showPictureInput, setShowPictureInput] = useState(false);
+  const [activeTodo, setActiveTodo] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
@@ -23,7 +22,7 @@ function App() {
     if (newTodo.trim()) {
       const updatedTodos = [
         ...todos,
-        { text: newTodo, description: '', picture: '', completed: false, subTodos: [], showDescription: false, showSubTodos: false, showPicture: false },
+        { text: newTodo, description: '', picture: '', completed: false, subTodos: [] },
       ];
       setTodos(updatedTodos);
       setNewTodo('');
@@ -110,6 +109,16 @@ function App() {
     }
   };
 
+  const openModal = (index) => {
+    setActiveTodo(index);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setActiveTodo(null);
+    setShowModal(false);
+  };
+
   const filteredTodos = todos.filter((todo) => {
     if (filter === 'all') return true;
     if (filter === 'active') return !todo.completed;
@@ -129,6 +138,7 @@ function App() {
             value={newTodo}
             onChange={(e) => setNewTodo(e.target.value)}
             placeholder="What needs to be done?"
+         
           />
         </form>
       </header>
@@ -137,109 +147,35 @@ function App() {
           <li key={index} className={todo.completed ? 'completed' : ''}>
             <div
               className="todo-content"
-              onClick={() => setActiveTodoIndex(index === activeTodoIndex ? null : index)}
+              onClick={() => openModal(index)}
             >
-              <input
+             <div>
+             <input
                 type="checkbox"
                 checked={todo.completed}
                 onChange={() => toggleTodo(index)}
               />
               <label>{todo.text}</label>
-              <button onClick={() => deleteTodo(index)}>Delete</button>
+             </div>
+              <button onClick={(e) => {
+                e.stopPropagation();
+                deleteTodo(index);
+              }}    className='btnn' >Delete</button>
             </div>
-            {activeTodoIndex === index && (
-              <div className="todo-details">
-                <div className="detail-section">
-                  <button
-                    onClick={() => setTodos(todos.map((todo, i) => i === index ? { ...todo, showSubTodos: !todo.showSubTodos } : todo))}
-                    className='btnn'
-                  >
-                    {todo.showSubTodos ? 'Hide Sub-todos' : 'Show Sub-todos'}
-                  </button>
-                  {todo.showSubTodos && (
-                    <div>
-                      <form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          const subTodoText = e.target.elements.subTodoText.value;
-                          if (subTodoText.trim()) {
-                            addSubTodo(index, subTodoText);
-                            e.target.elements.subTodoText.value = '';
-                          }
-                        }}
-                      >
-                        <input
-                          type="text"
-                          name="subTodoText"
-                          placeholder="Add sub-todo"
-                          className="sub-todo-input"
-                        />
-                        <button type="submit">Add</button>
-                      </form>
-                      <ul className="sub-todos">
-                        {todo.subTodos.map((subTodo, subIndex) => (
-                          <li key={subIndex} className={subTodo.completed ? 'completed' : ''}>
-                            <div className="todo-content">
-                              <input
-                                type="checkbox"
-                                checked={subTodo.completed}
-                                onChange={() => toggleTodo(index, subIndex)}
-                              />
-                              <label>{subTodo.text}</label>
-                              <button onClick={() => deleteTodo(index, subIndex)}>Delete</button>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-
-                <div className="detail-section">
-                  <button
-                    onClick={() => setTodos(todos.map((todo, i) => i === index ? { ...todo, showDescription: !todo.showDescription } : todo))}
-                    className='btnn setdec'
-                  >
-                    {todo.showDescription ? 'Hide Description' : 'Show Description'}
-                  </button>
-                  {todo.showDescription && (
-                    <textarea
-                      type="text"
-                      value={todo.description}
-                      onChange={(e) => updateDescription(index, e.target.value)}
-                      placeholder="Add description"
-                      className="description"
-                    />
-                  )}
-                </div>
-
-                <div className="detail-section">
-                  <button
-                    onClick={() => setTodos(todos.map((todo, i) => i === index ? { ...todo, showPicture: !todo.showPicture } : todo))}
-                    className='btnn'
-                  >
-                    {todo.showPicture ? 'Hide Photo' : 'Show Photo'}
-                  </button>
-                  {todo.showPicture && (
-                    <div>
-                      <input
-                        type="file"
-                        onChange={(e) => handlePictureUpload(index, e)}
-                        className="picture"
-                      />
-                      {todo.picture && (
-                        <div className="picture-container">
-                          <img src={todo.picture} alt="todo" className="todo-picture" />
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
           </li>
         ))}
       </ul>
+      {showModal && (
+        <Modal
+          todo={todos[activeTodo]}
+          onClose={closeModal}
+          onUpdateDescription={(desc) => updateDescription(activeTodo, desc)}
+          onAddSubTodo={(subTodoText) => addSubTodo(activeTodo, subTodoText)}
+          onUpdatePicture={(event) => handlePictureUpload(activeTodo, event)}
+          onDeleteSubTodo={(subIndex) => deleteTodo(activeTodo, subIndex)}
+          onToggleSubTodo={(subIndex) => toggleTodo(activeTodo, subIndex)}
+        />
+      )}
       <footer className="App-footer">
         <div className="filters">
           <span>

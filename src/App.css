@@ -61,6 +61,8 @@ ul {
 li {
   position: relative;
   font-size: 1em;
+ 
+  
 }
 
 li.completed label {
@@ -72,6 +74,8 @@ li .todo-content {
   display: flex;
   align-items: center;
   padding: 15px;
+  justify-content: space-between;
+  
 }
 
 li .todo-content input[type='checkbox'] {
