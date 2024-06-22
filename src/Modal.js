@@ -12,6 +12,8 @@ function Modal({
   onToggleSubTodo
 }) {
   const [subTodoText, setSubTodoText] = useState('');
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [description, setDescription] = useState(todo.description);
 
   const handleAddSubTodo = (e) => {
     e.preventDefault();
@@ -19,6 +21,11 @@ function Modal({
       onAddSubTodo(subTodoText);
       setSubTodoText('');
     }
+  };
+
+  const handleSaveDescription = () => {
+    onUpdateDescription(description);
+    setIsEditingDescription(false);
   };
 
   return (
@@ -29,12 +36,21 @@ function Modal({
 
         <div className="detail-section">
           <h3>Description</h3>
-          <TextareaAutosize
-            value={todo.description}
-            onChange={(e) => onUpdateDescription(e.target.value)}
-            placeholder="Add description"
-            className="description"
-          />
+          {isEditingDescription ? (
+            <div>
+              <TextareaAutosize
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Add description"
+                className="description"
+              />
+              <button  className ="btnn"onClick={handleSaveDescription}>Save</button>
+            </div>
+          ) : (
+            <div onClick={() => setIsEditingDescription(true)} className="description-display">
+              {description || "Click to add description"}
+            </div>
+          )}
         </div>
 
         <div className="detail-section">
@@ -45,9 +61,9 @@ function Modal({
               value={subTodoText}
               onChange={(e) => setSubTodoText(e.target.value)}
               placeholder="Add sub-todo"
-              className='sub-input'
+              className='add-input'
             />
-            <button  className='btn'type="submit">Add</button>
+           
           </form>
           <ul className="sub-todos">
             {todo.subTodos.map((subTodo, subIndex) => (
@@ -56,10 +72,9 @@ function Modal({
                   type="checkbox"
                   checked={subTodo.completed}
                   onChange={() => onToggleSubTodo(subIndex)}
-                  
                 />
                 <label>{subTodo.text}</label>
-                <button className="btn"onClick={() => onDeleteSubTodo(subIndex)}>Delete</button>
+                <button className ="btnn"onClick={() => onDeleteSubTodo(subIndex)}>Delete</button>
               </li>
             ))}
           </ul>

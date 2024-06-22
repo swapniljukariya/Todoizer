@@ -137,9 +137,7 @@ function App() {
             type="text"
             value={newTodo}
             onChange={(e) => setNewTodo(e.target.value)}
-            placeholder="What needs to be done?"
-         
-          />
+            placeholder="What needs to be done?"/>
         </form>
       </header>
       <ul>
