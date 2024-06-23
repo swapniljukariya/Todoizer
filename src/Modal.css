@@ -16,11 +16,11 @@
   padding: 20px;
   border-radius: 8px;
   width: 80%;
-  max-width: 60vw;
+  max-width: 70vw;
   position: relative;
-  max-height: 80%; /* Ensure the modal doesn't exceed 80% of the viewport height */
+  max-height: 90%; /* Ensure the modal doesn't exceed 80% of the viewport height */
   overflow-y: auto;
-  padding: 2em; /* Add vertical scroll if content exceeds max-height */
+  padding: 5em; /* Add vertical scroll if content exceeds max-height */
 }
 
 .close-button {
@@ -58,11 +58,17 @@
 
 .picture-container {
   margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
 }
 
 .todo-picture {
-  max-width: 100%;
-  height: auto;
+  max-width: 90%;
+  height: 35vh;
+  
+
 }
 
 .description {
@@ -92,4 +98,13 @@
   height: 3em;
   width: 17em;
   border-radius: 1px;
+}
+.date-section{
+  color: brown;
+  height: 1em;
+  width: 8em;
+  padding: 1.2em;
+  font-style: italic;
+  font-weight: bold;
+  border: 2px solid brown;
 }

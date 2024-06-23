@@ -22,7 +22,7 @@ function App() {
     if (newTodo.trim()) {
       const updatedTodos = [
         ...todos,
-        { text: newTodo, description: '', picture: '', completed: false, subTodos: [] },
+        { text: newTodo, description: '', picture: '', completed: false, subTodos: [], dueDate: null },
       ];
       setTodos(updatedTodos);
       setNewTodo('');
@@ -49,7 +49,19 @@ function App() {
           const updatedSubTodos = todo.subTodos.map((subTodo, j) =>
             j === subIndex ? { ...subTodo, completed: !subTodo.completed } : subTodo
           );
+          if (!todo.subTodos[subIndex].completed) {
+            const audio = new Audio(`${process.env.PUBLIC_URL}/nottone.mp3`); // Use process.env.PUBLIC_URL
+            audio.addEventListener('canplaythrough', () => {
+              audio.play(); // Play only when the audio is fully loaded
+            });
+          }
           return { ...todo, subTodos: updatedSubTodos };
+        }
+        if (!todo.completed) {
+          const audio = new Audio(`${process.env.PUBLIC_URL}/nottone.mp3`); // Use process.env.PUBLIC_URL
+          audio.addEventListener('canplaythrough', () => {
+            audio.play(); // Play only when the audio is fully loaded
+          });
         }
         return { ...todo, completed: !todo.completed };
       }
@@ -119,6 +131,14 @@ function App() {
     setShowModal(false);
   };
 
+  // Handle date update
+  const updateDueDate = (index, newDate) => {
+    const newTodos = todos.map((todo, i) =>
+      i === index ? { ...todo, dueDate: newDate } : todo
+    );
+    setTodos(newTodos);
+  };
+
   const filteredTodos = todos.filter((todo) => {
     if (filter === 'all') return true;
     if (filter === 'active') return !todo.completed;
@@ -149,12 +169,12 @@ function App() {
               onClick={() => openModal(index)}
             >
               <div>
-              <input
-                type="checkbox"
-                checked={todo.completed}
-                onChange={() => toggleTodo(index)}
-              />
-              <label>{todo.text}</label>
+                <input
+                  type="checkbox"
+                  checked={todo.completed}
+                  onChange={() => toggleTodo(index)}
+                />
+                <label>{todo.text}</label>
               </div>
               <button onClick={(e) => {
                 e.stopPropagation();
@@ -173,6 +193,7 @@ function App() {
           onUpdatePicture={(event) => handlePictureUpload(activeTodo, event)}
           onDeleteSubTodo={(subIndex) => deleteTodo(activeTodo, subIndex)}
           onToggleSubTodo={(subIndex) => toggleTodo(activeTodo, subIndex)}
+          onUpdateDueDate={(newDate) => updateDueDate(activeTodo, newDate)} // Pass the date update handler
         />
       )}
       <footer className="App-footer">
@@ -188,14 +209,12 @@ function App() {
           <button
             onClick={() => setFilter('active')}
             className="filter-item"
-
           >
             Active
           </button>
           <button
             onClick={() => setFilter('completed')}
             className='filter-item'
-            
           >
             Completed
           </button>

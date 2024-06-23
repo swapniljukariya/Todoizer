@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import './Modal.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 function Modal({
   todo,
@@ -9,11 +11,13 @@ function Modal({
   onAddSubTodo,
   onUpdatePicture,
   onDeleteSubTodo,
-  onToggleSubTodo
+  onToggleSubTodo,
+  onUpdateDueDate // New prop for handling date updates
 }) {
   const [subTodoText, setSubTodoText] = useState('');
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [description, setDescription] = useState(todo.description);
+  const [startDate, setStartDate] = useState(todo.dueDate || new Date()); // Initialize with todo's due date
 
   const handleAddSubTodo = (e) => {
     e.preventDefault();
@@ -26,6 +30,12 @@ function Modal({
   const handleSaveDescription = () => {
     onUpdateDescription(description);
     setIsEditingDescription(false);
+  };
+
+  // Update the due date in parent component
+  const handleDateChange = (date) => {
+    setStartDate(date);
+    onUpdateDueDate(date);
   };
 
   return (
@@ -44,13 +54,22 @@ function Modal({
                 placeholder="Add description"
                 className="description"
               />
-              <button  className ="btnn"onClick={handleSaveDescription}>Save</button>
+              <button className="btnn" onClick={handleSaveDescription}>Save</button>
             </div>
           ) : (
             <div onClick={() => setIsEditingDescription(true)} className="description-display">
               {description || "Click to add description"}
             </div>
           )}
+          <div>
+            <h4>Due Date</h4>
+            <DatePicker 
+              placeholder="pick the date"
+              className='date-section' 
+              selected={startDate} 
+              onChange={handleDateChange} // Use handleDateChange instead of setStartDate
+            />
+          </div>
         </div>
 
         <div className="detail-section">
@@ -63,7 +82,6 @@ function Modal({
               placeholder="Add sub-todo"
               className='add-input'
             />
-           
           </form>
           <ul className="sub-todos">
             {todo.subTodos.map((subTodo, subIndex) => (
@@ -74,7 +92,7 @@ function Modal({
                   onChange={() => onToggleSubTodo(subIndex)}
                 />
                 <label>{subTodo.text}</label>
-                <button className ="btnn"onClick={() => onDeleteSubTodo(subIndex)}>Delete</button>
+                <button className="btnn" onClick={() => onDeleteSubTodo(subIndex)}>Delete</button>
               </li>
             ))}
           </ul>
