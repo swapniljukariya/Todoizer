@@ -137,7 +137,8 @@ function App() {
             type="text"
             value={newTodo}
             onChange={(e) => setNewTodo(e.target.value)}
-            placeholder="What needs to be done?"/>
+            placeholder="What needs to be done?"
+          />
         </form>
       </header>
       <ul>
@@ -147,18 +148,18 @@ function App() {
               className="todo-content"
               onClick={() => openModal(index)}
             >
-             <div>
-             <input
+              <div>
+              <input
                 type="checkbox"
                 checked={todo.completed}
                 onChange={() => toggleTodo(index)}
               />
               <label>{todo.text}</label>
-             </div>
+              </div>
               <button onClick={(e) => {
                 e.stopPropagation();
                 deleteTodo(index);
-              }}    className='btnn' >Delete</button>
+              }}>Delete</button>
             </div>
           </li>
         ))}
@@ -180,24 +181,25 @@ function App() {
             {itemsLeft} item{itemsLeft !== 1 ? 's' : ''} left
           </span>
           <button onClick={() => setFilter('all')} 
-            className='btnn'>
+          className="filter-item"
+            >
             All
           </button>
           <button
             onClick={() => setFilter('active')}
-            className='btnn'
+            className="filter-item"
 
           >
             Active
           </button>
           <button
             onClick={() => setFilter('completed')}
-           
-            className='btnn'
+            className='filter-item'
+            
           >
             Completed
           </button>
-          <button className='btnn' onClick={clearCompleted}>Clear completed</button>
+          <button className="filter-item" onClick={clearCompleted}>Clear completed</button>
         </div>
       </footer>
     </div>
