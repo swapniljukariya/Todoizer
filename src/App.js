@@ -1,228 +1,124 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
-import Modal from './Modal';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Sidebar from "./Components/Sidebar";
+import Header from "./Components/Header";
+import Home from "./Components/Home";
+import SignInModal from "./Components/SigninModal";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  const [todos, setTodos] = useState(() => {
-    const storedTodos = localStorage.getItem('todos');
-    return storedTodos ? JSON.parse(storedTodos) : [];
-  });
+  const [todos, setTodos] = useState([]);
+  const [userDetails, setUserDetails] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
-  const [newTodo, setNewTodo] = useState('');
-  const [filter, setFilter] = useState('all');
-  const [activeTodo, setActiveTodo] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const Tags = ["Work", "Personal", "Urgent"]; // You can add more tags here
+  const Labels = ["Work", "Personal", "Urgent"]; // You can add more labels here
 
+  // On initial load, fetch todos from localStorage
   useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
+    const storedTodos = JSON.parse(localStorage.getItem("todos")) || [];
+    setTodos(storedTodos);
 
-  const addTodo = (e) => {
-    e.preventDefault();
-    if (newTodo.trim()) {
-      const updatedTodos = [
-        ...todos,
-        { text: newTodo, description: '', picture: '', completed: false, subTodos: [], dueDate: null },
-      ];
-      setTodos(updatedTodos);
-      setNewTodo('');
+    const storedUserDetails = JSON.parse(localStorage.getItem("userDetails"));
+    if (storedUserDetails) {
+      setUserDetails(storedUserDetails);
     }
-  };
+  }, []);
 
-  const addSubTodo = (index, newSubTodoText) => {
-    const updatedTodos = todos.map((todo, i) => {
-      if (i === index) {
-        return {
-          ...todo,
-          subTodos: [...todo.subTodos, { text: newSubTodoText, completed: false }],
-        };
-      }
-      return todo;
-    });
+  // Add a new todo and save it to localStorage
+  const addTodo = (updatedTodos) => {
     setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
   };
 
-  const toggleTodo = (index, subIndex = null) => {
-    const newTodos = todos.map((todo, i) => {
-      if (i === index) {
-        if (subIndex !== null) {
-          const updatedSubTodos = todo.subTodos.map((subTodo, j) =>
-            j === subIndex ? { ...subTodo, completed: !subTodo.completed } : subTodo
-          );
-          if (!todo.subTodos[subIndex].completed) {
-            const audio = new Audio(`${process.env.PUBLIC_URL}/nottone.mp3`); // Use process.env.PUBLIC_URL
-            audio.addEventListener('canplaythrough', () => {
-              audio.play(); // Play only when the audio is fully loaded
-            });
-          }
-          return { ...todo, subTodos: updatedSubTodos };
-        }
-        if (!todo.completed) {
-          const audio = new Audio(`${process.env.PUBLIC_URL}/nottone.mp3`); // Use process.env.PUBLIC_URL
-          audio.addEventListener('canplaythrough', () => {
-            audio.play(); // Play only when the audio is fully loaded
-          });
-        }
-        return { ...todo, completed: !todo.completed };
-      }
-      return todo;
-    });
-    setTodos(newTodos);
+  // Toggle sidebar visibility
+  const toggleSidebar = () => {
+    setIsSidebarVisible((prev) => !prev);
   };
-
-  const deleteTodo = (index, subIndex = null) => {
-    const newTodos = todos
-      .map((todo, i) => {
-        if (i === index) {
-          if (subIndex !== null) {
-            const updatedSubTodos = todo.subTodos.filter((_, j) => j !== subIndex);
-            return { ...todo, subTodos: updatedSubTodos };
-          }
-          return null;
-        }
-        return todo;
-      })
-      .filter((todo) => todo !== null);
-    setTodos(newTodos);
-  };
-
-  const clearCompleted = () => {
-    const newTodos = todos
-      .map((todo) => ({
-        ...todo,
-        subTodos: todo.subTodos.filter((subTodo) => !subTodo.completed),
-      }))
-      .filter((todo) => !todo.completed);
-    setTodos(newTodos);
-  };
-
-  const updateDescription = (index, newDescription) => {
-    const newTodos = todos.map((todo, i) =>
-      i === index ? { ...todo, description: newDescription } : todo
-    );
-    setTodos(newTodos);
-  };
-
-  const updatePicture = (index, newPicture) => {
-    const newTodos = todos.map((todo, i) =>
-      i === index ? { ...todo, picture: newPicture } : todo
-    );
-    setTodos(newTodos);
-  };
-
-  const handlePictureUpload = (index, event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      updatePicture(index, reader.result);
-    };
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const openModal = (index) => {
-    setActiveTodo(index);
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setActiveTodo(null);
-    setShowModal(false);
-  };
-
-  // Handle date update
-  const updateDueDate = (index, newDate) => {
-    const newTodos = todos.map((todo, i) =>
-      i === index ? { ...todo, dueDate: newDate } : todo
-    );
-    setTodos(newTodos);
-  };
-
-  const filteredTodos = todos.filter((todo) => {
-    if (filter === 'all') return true;
-    if (filter === 'active') return !todo.completed;
-    if (filter === 'completed') return todo.completed;
-    return true;
-  });
-
-  const itemsLeft = todos.filter((todo) => !todo.completed).length;
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>todos</h1>
-        <form onSubmit={addTodo}>
-          <input
-            type="text"
-            value={newTodo}
-            onChange={(e) => setNewTodo(e.target.value)}
-            placeholder="What needs to be done?"
+    <Router>
+      <div className="relative">
+        {userDetails && (
+          <Sidebar
+            isSidebarVisible={isSidebarVisible}
+            toggleSidebar={toggleSidebar}
+            Tags={Tags}
+            Labels={Labels}
+            userDetails={userDetails}
+            setUserDetails={setUserDetails}
           />
-        </form>
-      </header>
-      <ul>
-        {filteredTodos.map((todo, index) => (
-          <li key={index} className={todo.completed ? 'completed' : ''}>
-            <div
-              className="todo-content"
-              onClick={() => openModal(index)}
-            >
-              <div>
-                <input
-                  type="checkbox"
-                  checked={todo.completed}
-                  onChange={() => toggleTodo(index)}
-                />
-                <label>{todo.text}</label>
-              </div>
-              <button onClick={(e) => {
-                e.stopPropagation();
-                deleteTodo(index);
-              }}>Delete</button>
-            </div>
-          </li>
-        ))}
-      </ul>
-      {showModal && (
-        <Modal
-          todo={todos[activeTodo]}
-          onClose={closeModal}
-          onUpdateDescription={(desc) => updateDescription(activeTodo, desc)}
-          onAddSubTodo={(subTodoText) => addSubTodo(activeTodo, subTodoText)}
-          onUpdatePicture={(event) => handlePictureUpload(activeTodo, event)}
-          onDeleteSubTodo={(subIndex) => deleteTodo(activeTodo, subIndex)}
-          onToggleSubTodo={(subIndex) => toggleTodo(activeTodo, subIndex)}
-          onUpdateDueDate={(newDate) => updateDueDate(activeTodo, newDate)} // Pass the date update handler
+        )}
+        <Header
+          userDetails={userDetails}
+          setIsModalOpen={setIsModalOpen}
+          onSignOut={() => {
+            setUserDetails(null); // Clear user details
+            localStorage.removeItem("userDetails"); // Remove user details from localStorage
+            setIsSidebarVisible(false); // Hide the sidebar immediately after sign out
+          }}
+          toggleSidebar={toggleSidebar}
         />
-      )}
-      <footer className="App-footer">
-        <div className="filters">
-          <span>
-            {itemsLeft} item{itemsLeft !== 1 ? 's' : ''} left
-          </span>
-          <button onClick={() => setFilter('all')} 
-          className="filter-item"
-            >
-            All
-          </button>
-          <button
-            onClick={() => setFilter('active')}
-            className="filter-item"
-          >
-            Active
-          </button>
-          <button
-            onClick={() => setFilter('completed')}
-            className='filter-item'
-          >
-            Completed
-          </button>
-          <button className="filter-item" onClick={clearCompleted}>Clear completed</button>
-        </div>
-      </footer>
-    </div>
+        <main className="p-4">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                userDetails ? (
+                  <Home
+                    Tags={Tags}
+                    Labels={Labels}
+                    todos={todos}
+                    addTodo={addTodo}
+                    userDetails={userDetails}
+                  />
+                ) : (
+                  <UnauthenticatedMessage setIsModalOpen={setIsModalOpen} />
+                )
+              }
+            />
+          </Routes>
+        </main>
+        {isModalOpen && (
+          <SignInModal
+            setUserDetails={(details) => {
+              setUserDetails(details);
+              localStorage.setItem("userDetails", JSON.stringify(details));
+              setIsModalOpen(false);
+            }}
+            setIsModalOpen={setIsModalOpen}
+          />
+        )}
+        <ToastContainer position="top-center" />
+      </div>
+    </Router>
   );
 }
 
 export default App;
+
+const UnauthenticatedMessage = ({ setIsModalOpen }) => (
+  <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 to-white p-8">
+    <div className="max-w-md bg-white rounded-lg shadow-xl p-8 text-center transform transition duration-300 hover:scale-105">
+      <h2 className="text-4xl font-extrabold text-indigo-700 mb-6 tracking-wider drop-shadow-md">
+        Welcome to <span className="text-yellow-500">Todoist</span> 🎉
+      </h2>
+      <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+        Please <span className="text-indigo-600 font-semibold">sign in</span> to manage your tasks and stay organized.
+      </p>
+
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="w-full px-6 py-3 bg-indigo-600 text-white text-lg font-medium rounded-lg shadow-md hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 focus:outline-none transition-all duration-300 ease-in-out transform hover:scale-105"
+      >
+        Sign In
+      </button>
+    </div>
+
+    <footer className="mt-8 text-gray-500 text-sm italic">
+      Your productivity starts here. 🚀
+    </footer>
+  </div>
+);
